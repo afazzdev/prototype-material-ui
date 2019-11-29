@@ -1,29 +1,10 @@
 import React from "react";
+import Routes from "../routes/routes";
 
-import Auth from "./Auth";
-
-import {
-  CssBaseline,
-  MuiThemeProvider,
-  createMuiTheme
-} from "@material-ui/core";
+import { MuiProvider } from "../styles";
 
 const App = () => {
-  const theme = createMuiTheme({
-    palette: {
-      primary: {
-        main: "#20B2AA"
-      }
-    },
-    fontFamily: `'Open Sans',"Roboto", "Helvetica", "Arial", sans-serif`
-  });
-  console.log(theme);
-  return (
-    <MuiThemeProvider theme={theme}>
-      <CssBaseline />
-      <Auth />
-    </MuiThemeProvider>
-  );
+  return <Routes />;
 };
 
-export default App;
+export default MuiProvider(App);
