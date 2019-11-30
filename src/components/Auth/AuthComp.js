@@ -4,6 +4,7 @@ import { Grid, Hidden, Divider, makeStyles } from "@material-ui/core";
 import Bg1 from "../../assets/bg1.jpg";
 
 import Forms from "./Forms";
+import LogicForm from "./LogicForms";
 
 const useStyle = makeStyles({
   root: {
@@ -35,21 +36,55 @@ const useStyle = makeStyles({
   }
 });
 
-const IsFirstTime = ({ classes, Auth }) => {
+const IsFirstTime = ({ classes }) => {
   return (
     <>
       <Grid item xs sm direction="row" className={classes.forms}>
-        <Forms Auth={Auth} whatFor="Register" />
+        <LogicForm
+          render={(
+            state,
+            handleChange,
+            handleClickShowPassword,
+            handleSubmit
+          ) => (
+            <Forms
+              whatFor="Register"
+              Auth={state.Auth}
+              values={state.values}
+              error={state.error}
+              complete={state.complete}
+              handleChange={handleChange}
+              handleClickShowPassword={handleClickShowPassword}
+              handleSubmit={handleSubmit}
+            />
+          )}
+        />
       </Grid>
-      <Divider orientation="vertical" className={classes.divider} />
+      {/* <Divider orientation="vertical" className={classes.divider} />
       <Grid item xs sm className={classes.forms}>
-        <Forms Auth={Auth} whatFor="Login" />
-      </Grid>
+        <LogicForm
+          render={(
+            state,
+            handleChange,
+            handleClickShowPassword,
+            handleSubmit
+          ) => (
+            <Forms
+              whatFor="Login"
+              Auth={state.Auth}
+              values={state.values}
+              handleChange={handleChange}
+              handleClickShowPassword={handleClickShowPassword}
+              handleSubmit={handleSubmit}
+            />
+          )}
+        />
+      </Grid> */}
     </>
   );
 };
 
-const AuthComp = ({ state: { Auth, isNewAcccount } }) => {
+const AuthComp = () => {
   const classes = useStyle();
   return (
     <>
@@ -67,7 +102,7 @@ const AuthComp = ({ state: { Auth, isNewAcccount } }) => {
         </Hidden>
         <Grid item xs sm={8} className={classes.root}>
           <Grid container className={classes.root}>
-            <IsFirstTime classes={classes} Auth={Auth} />
+            <IsFirstTime classes={classes} />
           </Grid>
         </Grid>
       </Grid>
