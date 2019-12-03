@@ -5,6 +5,7 @@ import { Button, makeStyles, withStyles } from "@material-ui/core";
 const useStyle = makeStyles(theme => ({
   dropShadow: {
     marginTop: "2rem",
+    marginBottom: "2rem",
     filter: "drop-shadow(0px 0px 3px rgba(0,0,0,0.5))"
   }
 }));

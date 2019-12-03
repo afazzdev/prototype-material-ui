@@ -14,8 +14,24 @@ const Forms = ({
   handleClickShowPassword,
   handleSubmit
 }) => {
+  const forAuth = () => {
+    const a = Object.keys(values);
+    const b = Object.keys(values[whatFor.toLowerCase()]);
+    const c = a.map(e => {
+      return { [`${e}`]: b };
+    });
+    // console.log(values);
+    // const c = Object.keys(values[b])
+    return c;
+  };
+
+  const z = {
+    values: Object.assign({}, forAuth())
+  };
+
   return (
     <>
+      {console.log(z)}
       <Container>
         <form
           onSubmit={handleSubmit}
@@ -24,6 +40,7 @@ const Forms = ({
             placeItems: "center",
             gridAutoFlow: "row"
           }}
+          name={whatFor.toLowerCase()}
         >
           <InputStyled
             whatFor={whatFor}
@@ -35,7 +52,12 @@ const Forms = ({
             handleClickShowPassword={handleClickShowPassword}
             handleSubmit={handleSubmit}
           />
-          <ButtonStyled variant="contained" color="primary" type="submit">
+          <ButtonStyled
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={values.disabled}
+          >
             Submit
           </ButtonStyled>
         </form>

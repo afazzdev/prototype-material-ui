@@ -22,7 +22,11 @@ export const MuiProvider = WrappedComp => {
       fontFamily: `'Open Sans',"Roboto", "Helvetica", "Arial", sans-serif`,
       props: {
         polygon:
-          "polygon(.5rem 0%, calc(100% - .5rem) 0%, 100% calc(0% + .5rem), 100% calc(100% - .5rem), calc(100% - .5rem) 100%, calc(0% + .5rem) 100%, 0% calc(100% - .5rem), 0% calc(0% + .5rem))"
+          "polygon(.5rem 0%, calc(100% - .5rem) 0%, 100% calc(0% + .5rem), 100% calc(100% - .5rem), calc(100% - .5rem) 100%, calc(0% + .5rem) 100%, 0% calc(100% - .5rem), 0% calc(0% + .5rem))",
+        polygonHalfRem:
+          "polygon(.5rem 0%, calc(100% - .5rem) 0%, 100% calc(0% + .5rem), 100% calc(100% - .5rem), calc(100% - .5rem) 100%, calc(0% + .5rem) 100%, 0% calc(100% - .5rem), 0% calc(0% + .5rem))",
+        polygonHalfRemMinThreePx:
+          "polygon(calc(.5rem - 3px) 0%, calc(100% - calc(.5rem - 3px)) 0%, 100% calc(0% + calc(.5rem - 3px)), 100% calc(100% - calc(.5rem - 3px)), calc(100% - calc(.5rem - 3px)) 100%, calc(0% + calc(.5rem - 3px)) 100%, 0% calc(100% - calc(.5rem - 3px)), 0% calc(0% + calc(.5rem - 3px)))"
       }
     });
 

@@ -27,7 +27,6 @@ const useStyle = makeStyles({
     display: "grid",
     placeItems: "center",
     gridAutoFlow: "column",
-    height: "100vh",
     width: "300px"
   },
   divider: {
@@ -39,47 +38,60 @@ const useStyle = makeStyles({
 const IsFirstTime = ({ classes }) => {
   return (
     <>
-      <Grid item xs sm direction="row" className={classes.forms}>
-        <LogicForm
-          render={(
-            state,
-            handleChange,
-            handleClickShowPassword,
-            handleSubmit
-          ) => (
-            <Forms
-              whatFor="Register"
-              Auth={state.Auth}
-              values={state.values}
-              error={state.error}
-              complete={state.complete}
-              handleChange={handleChange}
-              handleClickShowPassword={handleClickShowPassword}
-              handleSubmit={handleSubmit}
-            />
-          )}
-        />
+      <Grid
+        container
+        className={classes.root}
+        style={{
+          padding: "0 1rem"
+        }}
+        direction="row"
+      >
+        <Grid item xs sm className={classes.forms}>
+          <LogicForm
+            render={(
+              state,
+              handleChange,
+              handleClickShowPassword,
+              handleSubmit
+            ) => (
+              <Forms
+                whatFor="Register"
+                Auth={state.Auth}
+                values={state.values}
+                error={state.error}
+                complete={state.complete}
+                handleChange={handleChange}
+                handleClickShowPassword={handleClickShowPassword}
+                handleSubmit={handleSubmit}
+              />
+            )}
+          />
+        </Grid>
+        <Hidden smDown>
+          <Divider orientation="vertical" className={classes.divider} />
+        </Hidden>
+        <Grid item xs sm className={classes.forms}>
+          <LogicForm
+            render={(
+              state,
+              handleChange,
+              handleClickShowPassword,
+              handleSubmit
+            ) => (
+              <Forms
+                whatFor="Login"
+                Auth={state.Auth}
+                values={state.values}
+                error={state.error}
+                complete={state.complete}
+                handleChange={handleChange}
+                handleClickShowPassword={handleClickShowPassword}
+                handleSubmit={handleSubmit}
+              />
+            )}
+          />
+        </Grid>
       </Grid>
-      {/* <Divider orientation="vertical" className={classes.divider} />
-      <Grid item xs sm className={classes.forms}>
-        <LogicForm
-          render={(
-            state,
-            handleChange,
-            handleClickShowPassword,
-            handleSubmit
-          ) => (
-            <Forms
-              whatFor="Login"
-              Auth={state.Auth}
-              values={state.values}
-              handleChange={handleChange}
-              handleClickShowPassword={handleClickShowPassword}
-              handleSubmit={handleSubmit}
-            />
-          )}
-        />
-      </Grid> */}
     </>
   );
 };
@@ -96,14 +108,12 @@ const AuthComp = () => {
         justify="center"
       >
         <Hidden smDown>
-          <Grid item sm={4} className={classes.imageGrid}>
+          <Grid item sm={5} className={classes.imageGrid}>
             <img src={Bg1} alt="none" className={classes.image} />
           </Grid>
         </Hidden>
-        <Grid item xs sm={8} className={classes.root}>
-          <Grid container className={classes.root}>
-            <IsFirstTime classes={classes} />
-          </Grid>
+        <Grid item xs sm={7} className={classes.root}>
+          <IsFirstTime classes={classes} />
         </Grid>
       </Grid>
     </>

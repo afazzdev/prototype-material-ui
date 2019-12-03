@@ -1,18 +1,7 @@
 import React from "react";
+import MappedInput from "./MappedInput";
 
-import clsx from "clsx";
-
-import {
-  Typography,
-  FormControl,
-  InputLabel,
-  InputAdornment,
-  IconButton,
-  OutlinedInput,
-  FormHelperText,
-  makeStyles
-} from "@material-ui/core";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { Typography, Paper, makeStyles, withStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,9 +15,43 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(3)
   },
   textField: {
-    width: 300
+    //  clipPath: theme.props.polygon,
+  },
+  cuttedEdge: {
+    clipPath: theme.props.polygon,
+    padding: "1px",
+    background: theme.palette.grey.A100
+  },
+  dropShadow: {
+    background: "black"
+  },
+  authLabel: {
+    color: theme.palette.primary.main,
+    margin: "0 2rem",
+    padding: "1rem 0"
+  },
+  labelBorder: {
+    background: theme.palette.primary.main,
+    padding: "3px",
+    clipPath: theme.props.polygonHalfRem,
+    margin: "3rem"
   }
 }));
+
+const PaperEdit = withStyles(theme => ({
+  root: {
+    clipPath: theme.props.polygonHalfRemMinThreePx,
+    background: theme.palette.common.white
+  }
+}))(Paper);
+
+const PaperEditFinish = ({ children, classes }) => {
+  return (
+    <div className={classes.labelBorder}>
+      <PaperEdit>{children}</PaperEdit>
+    </div>
+  );
+};
 
 const InputStyled = ({
   whatFor,
@@ -40,102 +63,26 @@ const InputStyled = ({
   handleClickShowPassword
 }) => {
   const classes = useStyles();
-  // console.log(values);
+
   return (
     <>
-      <Typography variant="h4">{whatFor}</Typography>
-      {whatFor &&
-        Auth[whatFor.toLowerCase()].map(log => {
-          const isPassword = () => {
-            switch (log) {
-              case "Password":
-                if (values.showPassword) {
-                  return "text";
-                }
-                return "password";
-
-              case "Confirm Password":
-                if (values.showConfirmPassword) {
-                  return "text";
-                }
-                return "password";
-
-              default:
-                return "text";
-            }
-          };
-
-          const isShowPassword = () => {
-            if (log === "Password") {
-              if (values.showPassword) {
-                return <Visibility />;
-              } else {
-                return <VisibilityOff />;
-              }
-            } else {
-              if (values.showConfirmPassword) {
-                return <Visibility />;
-              } else {
-                return <VisibilityOff />;
-              }
-            }
-          };
-
-          const Name = `${log.toLowerCase().replace(/\s+/g, "")}`;
-
-          return (
-            <FormControl
-              key={log}
-              className={clsx(classes.margin, classes.textField)}
-              variant="outlined"
-              error={error[Name] ? error[Name] : false}
-            >
-              <InputLabel
-                htmlFor="outlined-adornment-password"
-                style={{
-                  background: "#fff",
-                  width: "auto",
-                  paddingRight: "0"
-                }}
-              >
-                {log}
-              </InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-password"
-                type={isPassword()}
-                value={values[Name] || ""}
-                className={classes.textField}
-                onChange={handleChange(Name)}
-                endAdornment={
-                  (log === "Password" || log === "Confirm Password") && (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={() => handleClickShowPassword(log)}
-                      >
-                        {isShowPassword()}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }
-                labelWidth={0}
-              />
-              {error[Name] ? (
-                <FormHelperText
-                  id="component-helper-text"
-                  variant="outlined"
-                  error={error}
-                >
-                  {error[Name]}
-                </FormHelperText>
-              ) : complete[Name] ? (
-                <FormHelperText id="component-helper-text" variant="outlined">
-                  {complete[Name]}
-                </FormHelperText>
-              ) : null}
-            </FormControl>
-          );
-        })}
+      <PaperEditFinish classes={classes}>
+        <Typography variant="h4" className={classes.authLabel}>
+          {whatFor}
+        </Typography>
+      </PaperEditFinish>
+      {whatFor && (
+        <MappedInput
+          whatFor={whatFor}
+          Auth={Auth}
+          values={values}
+          error={error}
+          complete={complete}
+          classes={classes}
+          handleChange={handleChange}
+          handleClickShowPassword={handleClickShowPassword}
+        />
+      )}
     </>
   );
 };

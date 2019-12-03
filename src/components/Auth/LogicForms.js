@@ -1,4 +1,5 @@
 import { Component } from "react";
+import Axios from "axios";
 
 class LogicForm extends Component {
   constructor(props) {
@@ -6,16 +7,25 @@ class LogicForm extends Component {
     this.state = {
       Auth: {
         login: ["Username", "Password"],
-        register: ["Username", "Phone", "Password", "Confirm Password"]
+        register: ["Username", "Email", "Password", "Confirm Password"]
       },
-      isNewAccount: false,
       values: {
-        username: "",
-        phone: "",
-        password: "",
-        confirmpassword: "",
-        showPassword: false,
-        showConfirmPassword: false
+        login: {
+          username: "",
+          email: "",
+          password: "",
+          confirmpassword: "",
+          showPassword: false,
+          showConfirmPassword: false,
+          disabled: true
+        },
+        register: {
+          username: "",
+          email: "",
+          showPassword: false,
+          showConfirmPassword: false,
+          disabled: true
+        }
       },
       error: {
         password: "",
@@ -23,14 +33,17 @@ class LogicForm extends Component {
       },
       complete: {
         username: "",
-        phone: "",
+        email: "",
         password: "",
         confirmpassword: ""
-      }
+      },
+      api: "https://peaceful-savannah-85788.herokuapp.com"
     };
   }
 
   isMatchPassword = () => {
+    //untuk mengecek apakah password dan confirm password sama
+
     const { values } = this.state;
     if (values.password !== values.confirmpassword) {
       this.setState(prevState => ({
@@ -44,37 +57,71 @@ class LogicForm extends Component {
       }));
     }
   };
-  //masih bingung dengan cara dinamic helpertext jika text <8
-  test = prop => {};
 
   handleChange = prop => event => {
-    const { values, error } = this.state;
-    const value = event.target.value;
+    const { value, name } = event.target;
 
-    // console.log("test", test)a;
     const tests = () => {
-      if (values[prop].length === 0) {
-        return this.setState(prevState => ({
-          complete: {
-            ...prevState.complete,
-            [prop]: "Empty"
-          }
-        }));
-      } else if (values[prop].length < 8) {
-        return this.setState(prevState => ({
-          complete: {
-            ...prevState.complete,
-            [prop]: "Less than 8 character"
-          }
-        }));
-      } else {
-        return this.setState(prevState => ({
-          complete: {
-            ...prevState.complete,
-            [prop]: "Completed"
-          }
-        }));
-      }
+      //untuk mengecek apakah input memiliki 8 character
+
+      return this.setState(prevState => {
+        if (prevState.values[prop].length === 0) {
+          return {
+            complete: {
+              ...prevState.complete,
+              [prop]: "Can't be empty"
+            }
+          };
+        } else if (prevState.values[prop].length < 8) {
+          return {
+            complete: {
+              ...prevState.complete,
+              [prop]: "Less than 8 character"
+            }
+          };
+        } else if (prevState.values[prop].length >= 8) {
+          return {
+            complete: {
+              ...prevState.complete,
+              [prop]: ""
+            }
+          };
+        }
+      });
+    };
+
+    const disableButton = () => {
+      //untuk mengecek apakah input memiliki 8 character
+
+      return this.setState(prevState => {
+        const { username, email, password, confirmpassword } = prevState.values;
+
+        const register =
+          name === "register" &&
+          (username.length >= 8 &&
+            email.length >= 8 &&
+            password.length >= 8 &&
+            confirmpassword.length >= 8);
+
+        const login =
+          name === "register" && (username.length >= 8 && password.length >= 8);
+
+        if (register || login) {
+          return {
+            values: {
+              ...prevState.values,
+              disabled: false
+            }
+          };
+        } else {
+          return {
+            values: {
+              ...prevState.values,
+              disabled: true
+            }
+          };
+        }
+      });
     };
 
     switch (prop) {
@@ -82,21 +129,37 @@ class LogicForm extends Component {
         setTimeout(this.isMatchPassword, 100);
 
         this.setState(prevState => ({
-          values: { ...prevState.values, [prop]: value }
+          values: { ...prevState.values, [prop]: value.replace(/\s+/g, "") }
         }));
+
+        setTimeout(disableButton, 100);
 
         break;
       default:
-        // setInterval(test, 100);
-        this.setState(prevState => ({
-          values: { ...prevState.values, [prop]: value }
-        }));
+        this.setState(prevState => {
+          if (prop === "Email") {
+            return {
+              values: {
+                ...prevState.values,
+                [prop]: value.replace(/\S+@\S+\.\S+/, "")
+              }
+            };
+          } else {
+            return {
+              values: { ...prevState.values, [prop]: value.replace(/\s+/g, "") }
+            };
+          }
+        });
+
+        setTimeout(disableButton, 100);
         setTimeout(tests, 100);
     }
     console.log("state from logic", this.state);
   };
 
   handleClickShowPassword = prop => {
+    //untuk mengubah type text ke password dan sebaliknya
+
     const { values } = this.state;
     this.setState({
       values: {
@@ -110,7 +173,18 @@ class LogicForm extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    console.log("submitted", this.state);
+    const { name } = event.target;
+
+    const {
+      values: { username, email, password },
+      api
+    } = this.state;
+
+    if (name === "register") {
+      Axios.post(`${api}/api/register`, { username, email, password })
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
+    }
   };
 
   render() {
