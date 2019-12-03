@@ -12,7 +12,8 @@ const useStyle = makeStyles(theme => ({
 
 const Styled = withStyles(theme => ({
   root: {
-    clipPath: theme.props.polygon
+    clipPath: theme.props.polygon,
+    margin: "0 .5rem"
   }
 }))(Button);
 

@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-// import { Card } from "@material-ui/core";
+import { withRouter } from "react-router-dom";
 
 import AuthComp from "../components/Auth/AuthComp";
 
@@ -7,10 +7,14 @@ class Auth extends Component {
   render() {
     return (
       <Fragment>
-        <AuthComp />
+        {localStorage.getItem("token") ? (
+          this.props.history.push("/dashboard")
+        ) : (
+          <AuthComp />
+        )}
       </Fragment>
     );
   }
 }
 
-export default Auth;
+export default withRouter(Auth);

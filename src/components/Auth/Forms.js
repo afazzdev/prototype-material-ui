@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Container } from "@material-ui/core";
+import { Container, Grid } from "@material-ui/core";
 import ButtonStyled from "../ButtonStyled/Button";
 import InputStyled from "../InputStyled/InputStyled";
 
@@ -14,24 +14,24 @@ const Forms = ({
   handleClickShowPassword,
   handleSubmit
 }) => {
-  const forAuth = () => {
-    const a = Object.keys(values);
-    const b = Object.keys(values[whatFor.toLowerCase()]);
-    const c = a.map(e => {
-      return { [`${e}`]: b };
-    });
-    // console.log(values);
-    // const c = Object.keys(values[b])
-    return c;
-  };
+  // const forAuth = () => {
+  //   const a = Object.keys(values);
+  //   const b = Object.keys(values[whatFor.toLowerCase()]);
+  //   const c = a.map(e => {
+  //     return { [`${e}`]: b };
+  //   });
+  //   // console.log(values);
+  //   // const c = Object.keys(values[b])
+  //   return c;
+  // };
 
-  const z = {
-    values: Object.assign({}, forAuth())
-  };
+  // const z = {
+  //   values: Object.assign({}, forAuth())
+  // };
 
   return (
     <>
-      {console.log(z)}
+      {/* {console.log(z)} */}
       <Container>
         <form
           onSubmit={handleSubmit}
@@ -52,14 +52,23 @@ const Forms = ({
             handleClickShowPassword={handleClickShowPassword}
             handleSubmit={handleSubmit}
           />
-          <ButtonStyled
-            variant="contained"
-            color="primary"
-            type="submit"
-            disabled={values.disabled}
-          >
-            Submit
-          </ButtonStyled>
+          <Grid container justify="flex-end">
+            <ButtonStyled
+              color="primary"
+              // name="isNewAccount"
+              onClick={() => handleClickShowPassword("isNewAccount")}
+            >
+              Create new account
+            </ButtonStyled>
+            <ButtonStyled
+              variant="contained"
+              color="primary"
+              type="submit"
+              disabled={values.disabled}
+            >
+              Submit
+            </ButtonStyled>
+          </Grid>
         </form>
       </Container>
     </>

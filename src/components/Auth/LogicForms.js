@@ -1,33 +1,30 @@
 import { Component } from "react";
 import Axios from "axios";
+import { withRouter } from "react-router";
 
 class LogicForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       Auth: {
-        login: ["Username", "Password"],
+        login: ["Email", "Password"],
         register: ["Username", "Email", "Password", "Confirm Password"]
       },
       values: {
-        login: {
-          username: "",
-          email: "",
-          password: "",
-          confirmpassword: "",
-          showPassword: false,
-          showConfirmPassword: false,
-          disabled: true
-        },
-        register: {
-          username: "",
-          email: "",
-          showPassword: false,
-          showConfirmPassword: false,
-          disabled: true
-        }
+        username: "",
+        email: "",
+        password: "",
+        confirmpassword: "",
+        showPassword: false,
+        showConfirmPassword: false,
+        disabled: true
       },
+      isNewAccount: false,
+      isMatched: false,
+      name: "",
       error: {
+        username: "",
+        email: "",
         password: "",
         confirmpassword: ""
       },
@@ -46,20 +43,28 @@ class LogicForm extends Component {
 
     const { values } = this.state;
     if (values.password !== values.confirmpassword) {
-      this.setState(prevState => ({
-        error: { ...prevState.error, confirmpassword: "Password different" },
-        complete: { ...prevState.complete, confirmpassword: "" }
-      }));
+      this.setState(prevState => {
+        return {
+          error: { ...prevState.error, confirmpassword: "Password different" },
+          complete: { ...prevState.complete, confirmpassword: "" },
+          isMatched: false
+        };
+      });
     } else {
       this.setState(prevState => ({
         error: { ...prevState.error, confirmpassword: "" },
-        complete: { ...prevState.complete, confirmpassword: "Password Matched" }
+        complete: {
+          ...prevState.complete,
+          confirmpassword: "Password Matched"
+        },
+        isMatched: true
       }));
     }
   };
 
   handleChange = prop => event => {
     const { value, name } = event.target;
+    // this.setState({ name: name });
 
     const tests = () => {
       //untuk mengecek apakah input memiliki 8 character
@@ -91,21 +96,33 @@ class LogicForm extends Component {
     };
 
     const disableButton = () => {
-      //untuk mengecek apakah input memiliki 8 character
+      //untuk mengecek apakah input memiliki 8 character dan men-disable button
 
       return this.setState(prevState => {
-        const { username, email, password, confirmpassword } = prevState.values;
+        const {
+          values: { username, email, password },
+          isMatched,
+          isNewAccount
+        } = prevState;
 
         const register =
           name === "register" &&
-          (username.length >= 8 &&
-            email.length >= 8 &&
-            password.length >= 8 &&
-            confirmpassword.length >= 8);
+          (username.length >= 8 && email.length >= 8 && isMatched) &&
+          isNewAccount;
 
         const login =
-          name === "register" && (username.length >= 8 && password.length >= 8);
+          name === "login" &&
+          (email.length >= 8 && password.length >= 8) &&
+          !isNewAccount;
 
+        console.log(
+          "login",
+          login,
+          "register",
+          register,
+          "ismatched",
+          isMatched
+        );
         if (register || login) {
           return {
             values: {
@@ -118,49 +135,88 @@ class LogicForm extends Component {
             values: {
               ...prevState.values,
               disabled: true
-            }
+            },
+            isMatched: false
           };
         }
       });
     };
 
     switch (prop) {
-      case "confirmpassword":
-        setTimeout(this.isMatchPassword, 100);
-
+      case "confirmpassword" || "password":
         this.setState(prevState => ({
           values: { ...prevState.values, [prop]: value.replace(/\s+/g, "") }
         }));
 
+        setTimeout(this.isMatchPassword, 100);
         setTimeout(disableButton, 100);
+        setTimeout(this.isMatchPassword, 100);
+        setTimeout(disableButton, 100);
+        setTimeout(tests, 100);
 
         break;
       default:
-        this.setState(prevState => {
-          if (prop === "Email") {
-            return {
-              values: {
-                ...prevState.values,
-                [prop]: value.replace(/\S+@\S+\.\S+/, "")
-              }
-            };
-          } else {
-            return {
-              values: { ...prevState.values, [prop]: value.replace(/\s+/g, "") }
-            };
+        this.setState(
+          prevState => {
+            if (prop === "Email") {
+              return {
+                values: {
+                  ...prevState.values,
+                  [prop]: value.replace(/\S+@\S+\.\S+/, "")
+                }
+              };
+            } else {
+              return {
+                values: {
+                  ...prevState.values,
+                  [prop]: value.replace(/\s+/g, "")
+                }
+              };
+            }
+          },
+          () => {
+            console.log("state from logic", this.state);
           }
-        });
+        );
 
         setTimeout(disableButton, 100);
         setTimeout(tests, 100);
+        setTimeout(disableButton, 100);
+        setTimeout(tests, 100);
     }
-    console.log("state from logic", this.state);
   };
 
-  handleClickShowPassword = prop => {
+  handleClick = prop => {
     //untuk mengubah type text ke password dan sebaliknya
 
-    const { values } = this.state;
+    const { values, isNewAccount } = this.state;
+    if (prop === "isNewAccount") {
+      this.setState({
+        values: {
+          username: "",
+          email: "",
+          password: "",
+          confirmpassword: "",
+          showPassword: false,
+          showConfirmPassword: false,
+          disabled: true
+        },
+        isNewAccount: !isNewAccount,
+        isMatched: false,
+        name: "",
+        error: {
+          password: "",
+          confirmpassword: ""
+        },
+        complete: {
+          username: "",
+          email: "",
+          password: "",
+          confirmpassword: ""
+        }
+      });
+    }
+
     this.setState({
       values: {
         ...values,
@@ -180,10 +236,72 @@ class LogicForm extends Component {
       api
     } = this.state;
 
+    this.setState(prevState => {
+      return { values: { ...prevState.values, disabled: true } };
+    });
+
     if (name === "register") {
       Axios.post(`${api}/api/register`, { username, email, password })
-        .then(res => console.log(res))
-        .catch(err => console.log(err));
+        .then(res =>
+          this.setState(
+            prevState => {
+              return {
+                values: {
+                  username: "",
+                  email: "",
+                  password: "",
+                  confirmpassword: "",
+                  showPassword: false,
+                  showConfirmPassword: false,
+                  disabled: !prevState.disabled
+                },
+                isNewAccount: !prevState.isNewAccount
+              };
+            },
+            () => console.log(res)
+          )
+        )
+        .catch(err =>
+          this.setState(
+            prevState => {
+              return {
+                values: { ...prevState.values, disabled: !prevState.disabled }
+              };
+            },
+            () => console.log(err)
+          )
+        );
+    } else if (name === "login") {
+      Axios.post(`${api}/api/login`, { email, password })
+        .then(res => {
+          localStorage.setItem("token", res.data.access_token);
+          this.setState(
+            prevState => {
+              return {
+                values: {
+                  username: "",
+                  email: "",
+                  password: "",
+                  confirmpassword: "",
+                  showPassword: false,
+                  showConfirmPassword: false,
+                  disabled: !prevState.disabled
+                }
+              };
+            },
+            () => console.log(res)
+          );
+        })
+        .catch(err =>
+          this.setState(
+            prevState => {
+              return {
+                values: { ...prevState.values, disabled: !prevState.disabled }
+              };
+            },
+            () => console.log(err)
+          )
+        );
     }
   };
 
@@ -191,10 +309,10 @@ class LogicForm extends Component {
     return this.props.render(
       this.state,
       this.handleChange,
-      this.handleClickShowPassword,
+      this.handleClick,
       this.handleSubmit
     );
   }
 }
 
-export default LogicForm;
+export default withRouter(LogicForm);

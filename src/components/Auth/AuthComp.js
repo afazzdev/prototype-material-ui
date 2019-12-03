@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid, Hidden, Divider, makeStyles } from "@material-ui/core";
 
-import Bg1 from "../../assets/bg1.jpg";
+import Bg2 from "../../assets/bg2.jpg";
 
 import Forms from "./Forms";
 import LogicForm from "./LogicForms";
@@ -48,29 +48,24 @@ const IsFirstTime = ({ classes }) => {
       >
         <Grid item xs sm className={classes.forms}>
           <LogicForm
-            render={(
-              state,
-              handleChange,
-              handleClickShowPassword,
-              handleSubmit
-            ) => (
+            render={(state, handleChange, handleClick, handleSubmit) => (
               <Forms
-                whatFor="Register"
+                whatFor={state.isNewAccount ? "Register" : "Login"}
                 Auth={state.Auth}
                 values={state.values}
                 error={state.error}
                 complete={state.complete}
                 handleChange={handleChange}
-                handleClickShowPassword={handleClickShowPassword}
+                handleClickShowPassword={handleClick}
                 handleSubmit={handleSubmit}
               />
             )}
           />
         </Grid>
-        <Hidden smDown>
+        {/* <Hidden smDown>
           <Divider orientation="vertical" className={classes.divider} />
         </Hidden>
-        <Grid item xs sm className={classes.forms}>
+         <Grid item xs sm className={classes.forms}>
           <LogicForm
             render={(
               state,
@@ -90,7 +85,7 @@ const IsFirstTime = ({ classes }) => {
               />
             )}
           />
-        </Grid>
+        </Grid> */}
       </Grid>
     </>
   );
@@ -108,11 +103,11 @@ const AuthComp = () => {
         justify="center"
       >
         <Hidden smDown>
-          <Grid item sm={5} className={classes.imageGrid}>
-            <img src={Bg1} alt="none" className={classes.image} />
+          <Grid item sm={8} className={classes.imageGrid}>
+            <img src={Bg2} alt="none" className={classes.image} />
           </Grid>
         </Hidden>
-        <Grid item xs sm={7} className={classes.root}>
+        <Grid item xs sm={4} className={classes.root}>
           <IsFirstTime classes={classes} />
         </Grid>
       </Grid>

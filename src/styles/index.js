@@ -31,7 +31,7 @@ export const MuiProvider = WrappedComp => {
     });
 
     render() {
-      console.log("this is theme from styles/index", this.theme);
+      // console.log("this is theme from styles/index", this.theme);
       return (
         <MuiThemeProvider theme={this.theme}>
           <CssBaseline />
